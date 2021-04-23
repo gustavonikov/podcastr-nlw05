@@ -1,17 +1,16 @@
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useContext } from 'react'
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
+
+import { PlayerContext } from '../contexts/PlayerContext'
+
 import api from '../services/api'
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString'
 
 import styles from './index.module.scss'
-
-type File = {
-	duration: number
-	url: string
-}
 
 type Episode = {
 	id: string
@@ -19,8 +18,9 @@ type Episode = {
 	members: string
 	publishedAt: string
 	thumbnail: string
-	file: File
 	durationAsString: string
+	duration: number
+	url: string
 }
 
 type HomeProps = {
@@ -29,6 +29,8 @@ type HomeProps = {
 }
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
+	const { playEpisode } = useContext(PlayerContext)
+
 	return (
 		<div className={styles.homepage}>
 			<section className={styles.latestEpisodes}>
@@ -57,7 +59,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 									<span>{episode.durationAsString}</span>
 								</div>
 
-								<button type="button">
+								<button type="button" onClick={() => playEpisode(episode)}>
 									<img src="/images/play-green.svg" alt="Play episode"/>
 								</button>
 							</li>
@@ -102,7 +104,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 											<td style={{ width:100} }>{episode.publishedAt}</td>
 											<td>{episode.durationAsString}</td>
 											<td>
-												<button type="button">
+												<button type="button" onClick={() => playEpisode(episode)}>
 													<img src="/images/play-green.svg" alt="Play episode" />
 												</button>
 											</td>
