@@ -1,14 +1,17 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
-
 import Image from 'next/image'
+import Link from 'next/link'
+import { Head } from 'next/document'
+
 import { format, parseISO } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
+
+import { usePlayer } from '../../contexts/PlayerContext'
 
 import api from '../../services/api'
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString'
 
 import styles from './styles.module.scss'
-import Link from 'next/link'
 
 type Episode = {
 	id: string
@@ -16,7 +19,8 @@ type Episode = {
 	members: string
 	publishedAt: string
 	thumbnail: string
-	file: File
+	duration: number
+    url: string
 	durationAsString: string
     description: string
 }
@@ -26,8 +30,13 @@ type EpisodeProps = {
 }
 
 export default function Episode({ episode }: EpisodeProps) {
+    const { playEpisode } = usePlayer()
+
     return (
         <div className={styles.episode}>
+            <Head>
+				<title>{episode.title}</title>
+			</Head>
             <div className={styles.thumbnailContainer}>
                 <Link href="/">
                     <button type="button">
@@ -35,7 +44,7 @@ export default function Episode({ episode }: EpisodeProps) {
                     </button>
                 </Link>
                 <Image width={700} height={160} src={episode.thumbnail} objectFit="cover" />
-                <button type="button">
+                <button type="button" onClick={() => playEpisode(episode)}>
                     <img src="/images/play.svg" alt="Play episode"/>
                 </button>
             </div>

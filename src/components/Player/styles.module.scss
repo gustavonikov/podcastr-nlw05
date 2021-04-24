@@ -26,8 +26,8 @@
     footer {
         align-self: stretch;
 
-        &.empty {
-            opacity: 0.5;
+        &.empty .progress {
+            opacity: 0.6;
         }
     }
 }
@@ -124,10 +124,19 @@
 
         &:disabled {
             cursor: default;
+            opacity: 0.6;
         }
 
         &:hover:not(:disabled) {
             filter: brightness(.82);
+        }
+
+        &.isActive {
+            filter: invert(.35) sepia(1) saturate(3) hue-rotate(100deg);
+        }
+
+        &.isActive:hover {
+            filter: brightness(.6) invert(.35) sepia(1) saturate(3) hue-rotate(100deg);
         }
 
         &.playButton {
